@@ -1,5 +1,5 @@
 import React from 'react';
-import TagIcon from '../assets/icons/tag.png'
+import TagIcon from '../assets/icons/label.svg'
 
 const LeftBar = ({ labels, onNewItemClick }) => {
     return (
@@ -8,10 +8,10 @@ const LeftBar = ({ labels, onNewItemClick }) => {
                 Power Note
             </div>
             <button onClick={onNewItemClick} style={styles.button}>
-                Add New Item
+                New Item
             </button>
             <div style={styles.labelsContainer}>
-                <div>
+                <div style={styles.contentTypes}>
                     LABELS
                 </div>
                 <ul style={styles.labelList}>
@@ -31,7 +31,9 @@ const styles = {
     logo: {
         width: '100%',
         paddingBottom: '10px',
-        fontSize: '20px'
+        fontSize: '20px',
+        color: 'white',
+        borderBottom: '1px solid #444444',
     },
     container: {
         width: '100%',
@@ -40,22 +42,37 @@ const styles = {
         // border: '1px solid black',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between'
+        // justifyContent: 'space-between'
     },
     button: {
         width: '100%',
+        padding: '5px',
+        borderRadius: '5px',
+        // border: '1px solid #007BFF',
+        border: 'none',
+
+        backgroundColor: '#004774',
+        color: '#e6e6e6',
+        cursor: 'pointer',
+        marginTop: '20px',
+        marginBottom: '20px',
+    },
+    contentTypes: {
+        color: '#e6e6e6',
+        fontSize: '16px',
+        paddingBottom: '5px',
+        fontWeight: 'bold',
+    },
+    contentContainer: {
+        // width: '100%',
+        borderBottom: '1px solid #444444',
         padding: '10px',
-        borderRadius: '8px',
-        border: '1px solid #007BFF',
-        backgroundColor: '#007BFF',
-        color: '#fff',
-        cursor: 'pointer'
     },
     labelsContainer: {
         display: 'flex',
         flexDirection: 'column',
         gap: '5px',
-        backgroundColor: 'green'
+        // backgroundColor: 'green'
     },
     labelList: {
         width: '100%',
@@ -64,17 +81,23 @@ const styles = {
         padding: '0'
     },
     tagIcon: {
-        width: '20px',
-
+        width: '22px',
+        padding: '2px'
     },
     label: {
         padding: '5px',
         borderRadius: '8px',
-        border: '1px solid #ccc',
-        display: 'flex'
+        // border: '1px solid #ccc',
+        display: 'flex',
+        color: '#e6e6e6',
+    
     },
     labelString: {
-        paddingLeft: '5px'
+        paddingLeft: '5px',
+        fontSize: '14px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 };
 
