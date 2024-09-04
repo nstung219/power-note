@@ -45,7 +45,7 @@ const RightBar = ({ searchQuery, onSearchChange, results }) => {
           style={styles.searchBar}
         />
       </div>
-      {/* <div className='scrollable-container'>
+      <div className='scrollable-container'>
         <ul style={styles.resultUl}>
           {results.map((result, index) => (
             <li key={index} style={styles.resultItem} onClick={handleNoteClick}>
@@ -58,8 +58,8 @@ const RightBar = ({ searchQuery, onSearchChange, results }) => {
             </li>
           ))}
         </ul>
-      </div> */}
-      {showOptions && (
+      </div>
+      {false && showOptions && (
         <div
           ref={dropdownRef}
           style={{

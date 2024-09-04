@@ -3,7 +3,7 @@ import React from 'react';
 import TagIcon from '../assets/icons/label.svg'
 import '../App.css';
 
-const LeftBar = ({ labels, onNewItemClick }) => {
+const LeftBar = ({ labels, onNewItemClick, handleLabelSelect }) => {
   return (
     <div style={styles.container}>
       <div style={styles.logo}>
@@ -20,7 +20,7 @@ const LeftBar = ({ labels, onNewItemClick }) => {
           {Array.from(labels).map((label, index) => (
             <li key={index} style={styles.label}>
               <img src={TagIcon} alt="My Icon" style={styles.tagIcon} />
-              <div style={styles.labelString}>{label}</div>
+              <div style={styles.labelString} onClick={(e) => handleLabelSelect(e.target.innerText)}>{label}</div>
             </li>
           ))}
         </ul>

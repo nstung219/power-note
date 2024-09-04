@@ -5,8 +5,7 @@
         "labels": [
             "psql",
             "postgres",
-            "database",
-            "user"
+            "database"
         ]
     },
     {
@@ -17,6 +16,441 @@
             "gcloud",
             "authentication",
             "login"
+        ]
+    },
+    {
+        "id": 3,
+        "note": "docker pull ubuntu",
+        "labels": [
+            "docker",
+            "container",
+            "ubuntu",
+            "image"
+        ]
+    },
+    {
+        "id": 4,
+        "note": "nginx configure ssl",
+        "labels": [
+            "nginx",
+            "ssl",
+            "web server",
+            "configuration"
+        ]
+    },
+    {
+        "id": 5,
+        "note": "aws s3 ls",
+        "labels": [
+            "aws",
+            "s3",
+            "storage",
+            "bucket"
+        ]
+    },
+    {
+        "id": 6,
+        "note": "python pandas read csv",
+        "labels": [
+            "python",
+            "pandas",
+            "data analysis",
+            "csv"
+        ]
+    },
+    {
+        "id": 7,
+        "note": "terraform init",
+        "labels": [
+            "terraform",
+            "infrastructure",
+            "iac",
+            "initialization"
+        ]
+    },
+    {
+        "id": 8,
+        "note": "kubectl get pods",
+        "labels": [
+            "kubernetes",
+            "kubectl",
+            "containers",
+            "pods"
+        ]
+    },
+    {
+        "id": 9,
+        "note": "git checkout branch",
+        "labels": [
+            "git",
+            "version control",
+            "branching"
+        ]
+    },
+    {
+        "id": 10,
+        "note": "ansible playbook run",
+        "labels": [
+            "ansible",
+            "automation",
+            "playbook"
+        ]
+    },
+    {
+        "id": 11,
+        "note": "nodejs install express",
+        "labels": [
+            "nodejs",
+            "javascript",
+            "express",
+            "web framework"
+        ]
+    },
+    {
+        "id": 12,
+        "note": "azure vm create",
+        "labels": [
+            "azure",
+            "vm",
+            "cloud",
+            "virtual machine"
+        ]
+    },
+    {
+        "id": 13,
+        "note": "sql join tables",
+        "labels": [
+            "sql",
+            "database",
+            "join",
+            "query"
+        ]
+    },
+    {
+        "id": 14,
+        "note": "react useState hook",
+        "labels": [
+            "react",
+            "javascript",
+            "hook",
+            "state management"
+        ]
+    },
+    {
+        "id": 15,
+        "note": "linux chmod 755",
+        "labels": [
+            "linux",
+            "permissions",
+            "chmod",
+            "file system"
+        ]
+    },
+    {
+        "id": 16,
+        "note": "gcp create bucket",
+        "labels": [
+            "gcp",
+            "cloud storage",
+            "bucket",
+            "google cloud"
+        ]
+    },
+    {
+        "id": 17,
+        "note": "bash script for loop",
+        "labels": [
+            "bash",
+            "shell scripting",
+            "loop",
+            "automation"
+        ]
+    },
+    {
+        "id": 18,
+        "note": "java compile with javac",
+        "labels": [
+            "java",
+            "compilation",
+            "javac",
+            "programming"
+        ]
+    },
+    {
+        "id": 19,
+        "note": "nginx reverse proxy",
+        "labels": [
+            "nginx",
+            "web server",
+            "reverse proxy"
+        ]
+    },
+    {
+        "id": 20,
+        "note": "python requests get",
+        "labels": [
+            "python",
+            "requests",
+            "http",
+            "get request"
+        ]
+    },
+    {
+        "id": 21,
+        "note": "docker-compose up",
+        "labels": [
+            "docker",
+            "containers",
+            "docker-compose",
+            "orchestration"
+        ]
+    },
+    {
+        "id": 22,
+        "note": "vuejs create component",
+        "labels": [
+            "vuejs",
+            "javascript",
+            "component",
+            "frontend"
+        ]
+    },
+    {
+        "id": 23,
+        "note": "mongodb find document",
+        "labels": [
+            "mongodb",
+            "database",
+            "query",
+            "nosql"
+        ]
+    },
+    {
+        "id": 24,
+        "note": "mysql create database",
+        "labels": [
+            "mysql",
+            "database",
+            "sql",
+            "create"
+        ]
+    },
+    {
+        "id": 25,
+        "note": "aws ec2 start instance",
+        "labels": [
+            "aws",
+            "ec2",
+            "cloud",
+            "instance"
+        ]
+    },
+    {
+        "id": 26,
+        "note": "git merge conflict resolve",
+        "labels": [
+            "git",
+            "version control",
+            "merge",
+            "conflict resolution"
+        ]
+    },
+    {
+        "id": 27,
+        "note": "python flask route",
+        "labels": [
+            "python",
+            "flask",
+            "web framework",
+            "route"
+        ]
+    },
+    {
+        "id": 28,
+        "note": "bash if statement",
+        "labels": [
+            "bash",
+            "shell scripting",
+            "conditional"
+        ]
+    },
+    {
+        "id": 29,
+        "note": "aws lambda deploy",
+        "labels": [
+            "aws",
+            "lambda",
+            "serverless",
+            "deploy"
+        ]
+    },
+    {
+        "id": 30,
+        "note": "jenkins pipeline build",
+        "labels": [
+            "jenkins",
+            "ci/cd",
+            "pipeline",
+            "automation"
+        ]
+    },
+    {
+        "id": 31,
+        "note": "linux grep search",
+        "labels": [
+            "linux",
+            "grep",
+            "search",
+            "command line"
+        ]
+    },
+    {
+        "id": 32,
+        "note": "nodejs fs read file",
+        "labels": [
+            "nodejs",
+            "filesystem",
+            "javascript",
+            "file handling"
+        ]
+    },
+    {
+        "id": 33,
+        "note": "azure function create",
+        "labels": [
+            "azure",
+            "function",
+            "serverless",
+            "cloud"
+        ]
+    },
+    {
+        "id": 34,
+        "note": "docker build image",
+        "labels": [
+            "docker",
+            "image",
+            "build",
+            "containers"
+        ]
+    },
+    {
+        "id": 35,
+        "note": "typescript interface define",
+        "labels": [
+            "typescript",
+            "javascript",
+            "interface",
+            "typing"
+        ]
+    },
+    {
+        "id": 36,
+        "note": "kubernetes deploy service",
+        "labels": [
+            "kubernetes",
+            "service",
+            "containers",
+            "deployment"
+        ]
+    },
+    {
+        "id": 37,
+        "note": "ansible ad-hoc command",
+        "labels": [
+            "ansible",
+            "automation",
+            "ad-hoc"
+        ]
+    },
+    {
+        "id": 38,
+        "note": "python os remove file",
+        "labels": [
+            "python",
+            "os module",
+            "file handling",
+            "remove"
+        ]
+    },
+    {
+        "id": 39,
+        "note": "sql alter table add column",
+        "labels": [
+            "sql",
+            "database",
+            "alter",
+            "add column"
+        ]
+    },
+    {
+        "id": 40,
+        "note": "git reset commit",
+        "labels": [
+            "git",
+            "version control",
+            "reset",
+            "commit"
+        ]
+    },
+    {
+        "id": 41,
+        "note": "aws rds create instance",
+        "labels": [
+            "aws",
+            "rds",
+            "database",
+            "cloud"
+        ]
+    },
+    {
+        "id": 42,
+        "note": "bash while loop",
+        "labels": [
+            "bash",
+            "shell scripting",
+            "loop",
+            "automation"
+        ]
+    },
+    {
+        "id": 43,
+        "note": "java spring boot application",
+        "labels": [
+            "java",
+            "spring boot",
+            "web framework",
+            "application"
+        ]
+    },
+    {
+        "id": 44,
+        "note": "react render list",
+        "labels": [
+            "react",
+            "javascript",
+            "render",
+            "list"
+        ]
+    },
+    {
+        "id": 45,
+        "note": "gcp create instance",
+        "labels": [
+            "gcp",
+            "vm",
+            "cloud",
+            "instance"
+        ]
+    },
+    {
+        "id": 46,
+        "note": "docker tag image",
+        "labels": [
+            "docker",
+            "image",
+            "tag",
+            "containers"
         ]
     }
 ]
