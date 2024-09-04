@@ -3,8 +3,16 @@ import LeftBar from './components/LeftBar';
 import RightBar from './components/RightBar';
 import NewItemPopup from './components/NewItemPopup';
 import { Container, Section, Bar } from '@column-resizer/react';
+import FlexSearch from "flexsearch";
 
 import './App.css'
+
+const index = new FlexSearch.Index({
+    tokenize: "forward",
+    cache: true,
+    resolution: 9,
+});
+
 
 function App() {
   const [data, setData] = useState([]);
@@ -22,7 +30,11 @@ function App() {
         }
         const jsonData = await response.json();
         setData(jsonData);
-        setResults(jsonData)
+        setResults(jsonData);
+        jsonData.forEach(note => {
+          console.log(note.note + " " +note.labels.join(" "))
+          index.add(note, note.note + " " +note.labels.join(" "));
+        });
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -39,12 +51,14 @@ function App() {
     const query = e.target.value;
     setSearchQuery(query);
     // Filter results based on query
-    setResults(
-      data.filter(item => {
-        if (query === '') return true;
-        return item.labels.includes(query)
-      }) // update this with flex search
-    );
+    console.log(index.search(query))
+    // setResults(
+    //   // data.filter(item => {
+    //   //   if (query === '') return true;
+    //   //   return item.labels.includes(query)
+    //   // }) // update this with flex search
+    //   index.search(query)
+    // );
   };
 
   // newItem button
