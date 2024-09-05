@@ -1,9 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const NewItemPopup = ({ onClose, onAddNote }) => {
   const [newNote, setNewNote] = useState('');
   const [newLabel, setNewLabel] = useState('');
   const [labels, setLabels] = useState([]);
+
+  const textareaRef = useRef(null);
+
+  const adjustHeight = () => {
+    const textarea = textareaRef.current;
+    textarea.style.height = 'auto'; // Reset height
+    textarea.style.height = `${textarea.scrollHeight}px`; // Set height to scrollHeight
+  };
+
+  const handleNoteChange = (event) => {
+    setNewNote(event.target.innerText);
+    adjustHeight();
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, []);
 
   const addLabel = () => {
     if (newLabel && !labels.includes(newLabel)) {
@@ -21,12 +38,21 @@ const NewItemPopup = ({ onClose, onAddNote }) => {
       <div style={styles.popupContent}>
         <p style={{ color: '#e6e6e6' }}>New Note</p>
         <div style={styles.inputContainer}>
-          <input
+          {/* <textarea
+            ref={textareaRef}
             type="text"
             value={newNote}
-            onChange={(e) => setNewNote(e.target.value)}
+            onChange={(e) => handleNoteChange(e)}
             placeholder="Insert note"
-            style={styles.input}
+            style={styles.noteInput}
+          /> */}
+          <div
+            ref={textareaRef}
+            contentEditable="true"
+            onInput={handleNoteChange}
+            style={styles.noteInput}
+            placeholder="Start typing..."
+            suppressContentEditableWarning={true}
           />
         </div>
         <div style={styles.inputContainer}>
@@ -41,21 +67,21 @@ const NewItemPopup = ({ onClose, onAddNote }) => {
             +
           </button>
         </div>
-        { labels.length > 0 ? 
-            <div style={styles.labelsContainer}>
+        {labels.length > 0 ?
+          <div style={styles.labelsContainer}>
             {labels.map((label, index) => (
               <div onClick={(e) => removeLabel(e.target.textContent)} key={index} style={styles.label}>
                 {label}
               </div>
             ))}
-            </div>
-        : "" }
+          </div>
+          : ""}
         <div style={styles.actionButtons}>
           <div style={styles.spacer}></div>
-          <button onClick={() => onAddNote({"note": newNote, "labels": labels})} style={{...styles.spacer, ...styles.saveButton}}>
+          <button onClick={() => onAddNote({ "note": newNote, "labels": labels })} style={{ ...styles.spacer, ...styles.saveButton }}>
             Save
           </button>
-          <button onClick={onClose} style={{...styles.spacer, ...styles.closeButton}}>
+          <button onClick={onClose} style={{ ...styles.spacer, ...styles.closeButton }}>
             Close
           </button>
           <div style={styles.spacer}></div>
@@ -94,15 +120,19 @@ const styles = {
     marginBottom: '10px',
     display: 'flex',
   },
-  input: {
+  noteInput: {
     width: '100%',
     padding: '10px',
     borderRadius: '8px',
+    backgroundColor: 'white',
     // marginBottom: '10px',
-    // color: '#e6e6e6',
+    color: 'black',
+    fontSize: '14px',
     border: 'none',
     outline: 'none',
     boxSizing: 'border-box',
+    resize: 'none',
+    // textAlign: 'center',
   },
   labelInput: {
     flexGrow: '1',

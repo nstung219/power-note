@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "note": "psql create user",
+        "note": "psql create user \n new user abcdef",
         "labels": [
             "psql",
             "postgres",

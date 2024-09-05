@@ -49,7 +49,7 @@ const RightBar = ({ searchQuery, onSearchChange, results }) => {
         <ul style={styles.resultUl}>
           {results.map((result, index) => (
             <li key={index} style={styles.resultItem} onClick={handleNoteClick}>
-              <strong>{result.note}</strong>
+              <strong style={styles.resultItemNote}>{result.note}</strong>
               <div style={styles.resultItemLabelContainer}>
                 {result.labels.map((label, index) => (
                   <div key={index} style={styles.resultItemLabels}>{label}</div>
@@ -146,6 +146,10 @@ const styles = {
     gap: '5px',
     marginTop: '5px',
     flexWrap: 'wrap',
+  },
+  resultItemNote: {
+    whiteSpace: "pre-line",
+    fontSize: "14px",
   },
   resultItemLabels: {
     padding: "5px",

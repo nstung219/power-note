@@ -39,6 +39,9 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    pointerEvent: 'none',
+    cursor: 'default',
+    userSelect: 'none',
   },
   container: {
     width: '100%',

@@ -46,3 +46,10 @@
 .scrollable-container::-webkit-scrollbar-thumb:hover {
   background: #555; /* Scrollbar color on hover */
 }
+
+[contenteditable=true]:empty:before{
+  content: attr(placeholder);
+  pointer-events: none;
+  display: block; /* For Firefox */
+  color: #757575;
+}
