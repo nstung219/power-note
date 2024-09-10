@@ -1,7 +1,7 @@
 [
     {
-        "id": 1,
-        "note": "psql create user \n new user abcdef",
+        "id": "1",
+        "note": "V\u00e0o kafka rackspace 003, r\u1ed3i curl http://localhost:8082/v3/clusters \n v\u00e0o /etc/kafka/server.properties ho\u1eb7c /etc/kafka-rest/kafka-rest.properties \u0111\u1ec3 xem listeners xem c\u00f3 k\u1ebft n\u1ed1i \u0111\u01b0\u1ee3c ko",
         "labels": [
             "psql",
             "postgres",
@@ -9,7 +9,7 @@
         ]
     },
     {
-        "id": 2,
+        "id": "2",
         "note": "gcloud auth list",
         "labels": [
             "gcp",
@@ -19,7 +19,7 @@
         ]
     },
     {
-        "id": 3,
+        "id": "3",
         "note": "docker pull ubuntu",
         "labels": [
             "docker",

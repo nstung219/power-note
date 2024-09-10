@@ -51,7 +51,7 @@ const NewItemPopup = ({ onClose, onAddNote }) => {
             contentEditable="true"
             onInput={handleNoteChange}
             style={styles.noteInput}
-            placeholder="Start typing..."
+            placeholder="Add new note..."
             suppressContentEditableWarning={true}
           />
         </div>

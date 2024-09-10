@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import LeftBar from './components/LeftBar';
 import RightBar from './components/RightBar';
 import NewItemPopup from './components/NewItemPopup';
+import NewItemResult from './components/NewItemResult';
 import { Container, Section, Bar } from '@column-resizer/react';
 import FlexSearch from "flexsearch";
 
@@ -13,33 +14,38 @@ const index = new FlexSearch.Index({
   resolution: 9,
 });
 
-
 function App() {
   const [data, setData] = useState([]);
   const [results, setResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showPopup, setShowPopup] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [isNewNoteCreated, setIsNewNoteCreated] = useState(true);
+
+  const host = process.env.REACT_APP_BACKEND_HOST || 'http://localhost:5000';
 
   // Load items from data.json
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/data/data.json');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const jsonData = await response.json();
-        setData(jsonData);
-        setResults(jsonData);
-        jsonData.forEach(note => {
-          index.add(note.id, note.note + " " + note.labels.join(" "));
+        await fetch(`${host}/notes`,{
+          method: 'GET'
+        })
+        .then(response => response.json())
+        .then(data => {
+          setData(data);
+          setResults(data);
+          data.forEach(note => {
+            index.add(note.id, note.note + " " + note.labels.join(" "));
+          });
         });
+
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
     };
     fetchData()
-  }, []);
+  }, [host]);
 
   useEffect(() => {
     setResults(
@@ -63,14 +69,29 @@ function App() {
   };
 
   // add label to new item
-  const handleAddNote = (note) => {
+  const handleAddNote = async (note) => {
     // add fetch save note to db and replace note update
-    const maxIdObject = data.reduce((max, current) => {
-      return current.id > max.id ? current : max;
-    }, data[0]);
-    note.id = maxIdObject.id + 1;
-    index.add(note.id, note.note + " " + note.labels.join(" "));
-    setData([...data, note]);
+    fetch(`${host}/note`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(note),
+    })
+      .then(response => {
+        if (!response.ok) {
+          setIsNewNoteCreated(false);
+        } else {
+          setIsNewNoteCreated(true);
+        }
+        return response.json()
+      })
+      .then(res_data => {
+        index.add(res_data.id, res_data.note + " " + res_data.labels.join(" "));
+        setData([...data, res_data]);
+        setShowResult(true);
+        setTimeout(() => setShowResult(false), 2000);
+      });
     setShowPopup(false);
   };
 
@@ -97,6 +118,7 @@ function App() {
           onAddNote={handleAddNote}
         />
       )}
+      {showResult && <NewItemResult isNewNoteCreated={isNewNoteCreated} />}
     </Container>
   );
 }
