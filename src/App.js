@@ -22,7 +22,7 @@ function App() {
   const [showResult, setShowResult] = useState(false);
   const [isNewNoteCreated, setIsNewNoteCreated] = useState(true);
 
-  const host = process.env.REACT_APP_BACKEND_HOST || 'http://localhost:5000';
+  const host = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   // Load items from data.json
   useEffect(() => {
@@ -39,7 +39,6 @@ function App() {
             index.add(note.id, note.note + " " + note.labels.join(" "));
           });
         });
-
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -60,7 +59,6 @@ function App() {
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    // Filter results based on query
   };
 
   // newItem button
@@ -83,12 +81,14 @@ function App() {
           setIsNewNoteCreated(false);
         } else {
           setIsNewNoteCreated(true);
+          return response.json()
         }
-        return response.json()
       })
       .then(res_data => {
-        index.add(res_data.id, res_data.note + " " + res_data.labels.join(" "));
-        setData([...data, res_data]);
+        if (res_data) {
+          index.add(res_data.id, res_data.note + " " + res_data.labels.join(" "));
+          setData([...data, res_data]);
+        }
         setShowResult(true);
         setTimeout(() => setShowResult(false), 2000);
       });
@@ -118,7 +118,7 @@ function App() {
           onAddNote={handleAddNote}
         />
       )}
-      {showResult && <NewItemResult isNewNoteCreated={isNewNoteCreated} />}
+      <NewItemResult isNewNoteCreated={isNewNoteCreated} showResult={showResult}/>
     </Container>
   );
 }

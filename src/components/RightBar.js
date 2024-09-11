@@ -9,11 +9,19 @@ const RightBar = ({ searchQuery, onSearchChange, results }) => {
   const [showOptions, setShowOptions] = useState(false);
   const dropdownRef = useRef(null);
 
-  const handleNoteClick = (event) => {
-    const { clientX, clientY } = event;
-    setDropdownPosition({ x: clientX, y: clientY });
-    setShowOptions(!showOptions);
-  };
+  const randomColor = () => {
+    const blue = Math.floor(Math.random() * 256); // Random value for blue channel
+    const red = Math.floor(Math.random() * 128) + 128; // Random value for red channel (128-255)
+    const green = Math.floor(Math.random() * 128); // Random value for green channel (0-127)
+
+    return `rgb(${red}, ${green}, ${blue})`;
+  }
+
+  // const handleNoteClick = (event) => {
+  //   const { clientX, clientY } = event;
+  //   setDropdownPosition({ x: clientX, y: clientY });
+  //   setShowOptions(!showOptions);
+  // };
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -45,19 +53,21 @@ const RightBar = ({ searchQuery, onSearchChange, results }) => {
           style={styles.searchBar}
         />
       </div>
-      <div className='scrollable-container'>
-        <ul style={styles.resultUl}>
-          {results.map((result, index) => (
-            <li key={index} style={styles.resultItem} onClick={handleNoteClick}>
-              <strong style={styles.resultItemNote}>{result.note}</strong>
-              <div style={styles.resultItemLabelContainer}>
-                {result.labels.map((label, index) => (
-                  <div key={index} style={styles.resultItemLabels}>{label}</div>
-                ))}
-              </div>
-            </li>
-          ))}
-        </ul>
+      <div style={styles.resultItemContainer}>
+        <div className='right-bar-list scrollable-container'>
+          <ul style={styles.resultUl}>
+            {results.map((result, index) => (
+              <li key={index} style={styles.resultItem}>
+                <div style={styles.resultItemLabelContainer}>
+                  {result.labels.map((label, index) => (
+                    <div key={index} style={{...styles.resultItemLabels, ...{ backgroundColor: randomColor() }}}>{label}</div>
+                  ))}
+                </div>
+                <strong style={styles.resultItemNote}>{result.note}</strong>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
       {false && showOptions && (
         <div
@@ -129,6 +139,16 @@ const styles = {
     borderRadius: '8px',
     // border: '1px solid #444444'
   },
+  resultItemContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '10px',
+    padding: '10px',
+    flex: '1',
+    overflow: 'auto'
+  },
   resultUl: {
     display: 'flex',
     flexDirection: 'column',
@@ -138,8 +158,9 @@ const styles = {
   resultItem: {
     padding: '10px',
     borderRadius: '8px',
-    border: '1px solid #444444',
-    color: '#e6e6e6'
+    // border: '1px solid #444444',
+    color: '#e6e6e6',
+    backgroundColor: '#444444',
   },
   resultItemLabelContainer: {
     display: 'flex',
@@ -150,6 +171,8 @@ const styles = {
   resultItemNote: {
     whiteSpace: "pre-line",
     fontSize: "14px",
+    marginLeft: '10px',
+    boxSizing: 'border-box',
   },
   resultItemLabels: {
     padding: "5px",

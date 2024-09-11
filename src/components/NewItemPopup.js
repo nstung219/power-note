@@ -105,7 +105,7 @@ const styles = {
     color: '#e6e6e6'
   },
   popupContent: {
-    width: '400px',
+    width: '800px',
     padding: '20px',
     backgroundColor: 'rgb(44,48,51)',
     borderRadius: '8px',

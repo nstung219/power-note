@@ -1,21 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import removeIcon from '../assets/icons/remove.png';
 import successIcon from '../assets/icons/success.png';
 
-const NewItemResult = ({ isNewNoteCreated }) => {
-  return (
-    <div style={styles.popup}>
-      {isNewNoteCreated ? 
-        <div style={styles.result}>
-          <img src={successIcon} alt="success" style={styles.resultIcon} />
-          New note created!
-        </div> : 
-        <div style={styles.result}>
-          <img src={removeIcon} alt="failed" style={styles.resultIcon} />
-          Failed to create note
-        </div>}
-    </div>
+import '../App.css'
+
+const NewItemResult = ({ isNewNoteCreated, showResult }) => {
+  const [shouldRender, setShouldRender] = useState(showResult);
+
+  useEffect(() => {
+    if (showResult) {
+      setShouldRender(true); // Show component immediately when isVisible is true
+    } else {
+      // Set a timeout to delay removing the component from the DOM until fade-out completes
+      const timeoutId = setTimeout(() => setShouldRender(false), 2000); // Match the CSS transition duration
+      return () => clearTimeout(timeoutId); // Cleanup the timeout if the component unmounts
+    }
+  }, [showResult]);
+
+  return shouldRender && (
+      <div style={styles.popup} className={`slide ${showResult ? 'visible' : ''}`}>
+        {isNewNoteCreated ?
+          <div style={styles.result}>
+            <img src={successIcon} alt="success" style={styles.resultIcon} />
+            New note created!
+          </div> :
+          <div style={styles.result}>
+            <img src={removeIcon} alt="failed" style={styles.resultIcon} />
+            Failed to create note
+          </div>}
+      </div>
   );
 };
 

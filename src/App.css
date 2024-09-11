@@ -30,6 +30,11 @@
   flex: 1;
 }
 
+.right-bar-list {
+  box-sizing: border-box;
+  width: 70%;
+}
+
 .scrollable-container::-webkit-scrollbar {
   width: 6px; 
 }
@@ -52,4 +57,18 @@
   pointer-events: none;
   display: block; /* For Firefox */
   color: #757575;
+}
+
+.slide {
+  opacity: 0;
+  transform: translateX(100%); /* Start off-screen to the right */
+  transition: transform 2s cubic-bezier(0.1, 0.2, 0.5, 0.1), opacity 2s ease-in-out;
+  /* max-height: 0; */
+  overflow: hidden;
+}
+
+.slide.visible {
+  opacity: 1;
+  transform: translateX(0); /* Slide back to the original position */
+  max-height: 100px; /* Adjust according to content */
 }
