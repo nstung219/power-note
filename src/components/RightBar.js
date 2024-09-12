@@ -2,20 +2,19 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import SeachIcon from '../assets/icons/search.png';
 import '../App.css';
+import HighlightText from './HighlightText';
 
-const RightBar = ({ searchQuery, onSearchChange, results }) => {
+const RightBar = ({ searchQuery, onSearchChange, results, searchLabels, handleSearchLabelClick }) => {
 
-  const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
-  const [showOptions, setShowOptions] = useState(false);
-  const dropdownRef = useRef(null);
+  results.map((result, index) => {
+    result.labels.map((label, index) => {
+      console.log(label.color, label.name)
+    })
+  })
 
-  const randomColor = () => {
-    const blue = Math.floor(Math.random() * 256); // Random value for blue channel
-    const red = Math.floor(Math.random() * 128) + 128; // Random value for red channel (128-255)
-    const green = Math.floor(Math.random() * 128); // Random value for green channel (0-127)
-
-    return `rgb(${red}, ${green}, ${blue})`;
-  }
+  // const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
+  // const [showOptions, setShowOptions] = useState(false);
+  // const dropdownRef = useRef(null);
 
   // const handleNoteClick = (event) => {
   //   const { clientX, clientY } = event;
@@ -23,35 +22,54 @@ const RightBar = ({ searchQuery, onSearchChange, results }) => {
   //   setShowOptions(!showOptions);
   // };
 
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setShowOptions(false);
-    }
-  };
+  // const handleClickOutside = (event) => {
+  //   if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+  //     setShowOptions(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (showOptions) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
+  // useEffect(() => {
+  //   if (showOptions) {
+  //     document.addEventListener('mousedown', handleClickOutside);
+  //   } else {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   }
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showOptions]);
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   };
+  // }, [showOptions]);
 
   return (
     <div style={styles.container}>
       <div style={styles.searchContainer}>
-        <img src={SeachIcon} alt="Search Icon" style={styles.icon} />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={onSearchChange}
-          placeholder="Search..."
-          style={styles.searchBar}
-        />
+        <div style={styles.searchInputContainer}>
+          <img src={SeachIcon} alt="Search Icon" style={styles.icon} />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={onSearchChange}
+            placeholder="Search..."
+            style={{...styles.searchBar, ...{borderBottom: '1px solid #444444'}}}
+          />
+        </div>
+        <div style={styles.searchInputContainer}>
+          <div style={styles.icon}>
+
+          </div>
+          {searchLabels.length > 0 ? (
+            <div style={styles.resultItemLabelContainer}>
+              {searchLabels.map((label, index) => {
+                return <div
+                  key={index}
+                  onClick={(e) => handleSearchLabelClick(e.target.innerText)}
+                  style={styles.resultItemLabels}
+                >{label}</div>
+              })}
+            </div>
+          ) : ""}
+        </div>
+
       </div>
       <div style={styles.resultItemContainer}>
         <div className='right-bar-list scrollable-container'>
@@ -60,16 +78,16 @@ const RightBar = ({ searchQuery, onSearchChange, results }) => {
               <li key={index} style={styles.resultItem}>
                 <div style={styles.resultItemLabelContainer}>
                   {result.labels.map((label, index) => (
-                    <div key={index} style={{...styles.resultItemLabels, ...{ backgroundColor: randomColor() }}}>{label}</div>
+                    <div key={index} style={{ ...styles.resultItemLabels, ...{ backgroundColor: label.color } }}>{label.name}</div>
                   ))}
                 </div>
-                <strong style={styles.resultItemNote}>{result.note}</strong>
+                <HighlightText text={result.note} highlight={searchQuery} />
               </li>
             ))}
           </ul>
         </div>
       </div>
-      {false && showOptions && (
+      {/* {false && showOptions && (
         <div
           ref={dropdownRef}
           style={{
@@ -81,7 +99,7 @@ const RightBar = ({ searchQuery, onSearchChange, results }) => {
           <button style={styles.dropdownItem} onClick={() => setShowOptions(false)} >Edit</button>
           <button style={styles.dropdownItem} onClick={() => setShowOptions(false)} >Delete</button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
@@ -121,11 +139,16 @@ const styles = {
     // textAlign: 'left',
   },
   searchContainer: {
-    // width: '100%',
-    padding: '10px',
-    paddingTop: '15px',
-    paddingBottom: '15px',
+    display: 'flex',
+    flexDirection: 'column',
+    boxSizing: 'border-box',
     borderBottom: '1px solid #444444',
+    padding: '10px',
+  },
+  searchInputContainer: {
+    width: '100%',
+    // paddingTop: '15px',
+    // paddingBottom: '15px',
     display: 'flex',
   },
   searchBar: {
@@ -156,8 +179,11 @@ const styles = {
     padding: '10px',
   },
   resultItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '5px',
     padding: '10px',
-    borderRadius: '8px',
+    borderRadius: '3px',
     // border: '1px solid #444444',
     color: '#e6e6e6',
     backgroundColor: '#444444',
@@ -168,17 +194,13 @@ const styles = {
     marginTop: '5px',
     flexWrap: 'wrap',
   },
-  resultItemNote: {
-    whiteSpace: "pre-line",
-    fontSize: "14px",
-    marginLeft: '10px',
-    boxSizing: 'border-box',
-  },
   resultItemLabels: {
     padding: "5px",
     border: '1px solid #444444',
     borderRadius: '8px',
     fontSize: "12px",
+    color: '#e6e6e6',
+    // color: 'black',
   }
 };
 

@@ -9,7 +9,7 @@ import FlexSearch from "flexsearch";
 import './App.css'
 
 const index = new FlexSearch.Index({
-  tokenize: "forward",
+  tokenize: "full",
   cache: true,
   resolution: 9,
 });
@@ -18,11 +18,33 @@ function App() {
   const [data, setData] = useState([]);
   const [results, setResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchLabels, setSearchLabels] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [isNewNoteCreated, setIsNewNoteCreated] = useState(true);
 
   const host = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+  const randomColor = () => {
+    // const blue = Math.floor(Math.random() * 256); // Random value for blue channel
+    // const red = Math.floor(Math.random() * 128) + 128; // Random value for red channel (128-255)
+    // const green = Math.floor(Math.random() * 128); // Random value for green channel (0-127)
+
+    // return `rgb(${red}, ${green}, ${blue})`;
+    let red, green, blue;
+
+    do {
+      blue = Math.floor(Math.random() * 128);
+      red = Math.floor(Math.random() * 128) + 50;
+      green = Math.floor(Math.random() * 128) + 50;
+    } while (red + green + blue < 200); // Ensure the sum of RGB values is high enough to avoid black-related colors
+
+    return `rgb(${red}, ${green}, ${blue})`;
+  }
+
+  const flexSearchAdd = (note) => {
+    index.add(note.id, note.note + " " + note.labels.map(label => label.name).join(" "));
+  }
 
   // Load items from data.json
   useEffect(() => {
@@ -32,11 +54,15 @@ function App() {
           method: 'GET'
         })
         .then(response => response.json())
-        .then(data => {
-          setData(data);
-          setResults(data);
-          data.forEach(note => {
-            index.add(note.id, note.note + " " + note.labels.join(" "));
+        .then(jsonData => {
+          const newData = jsonData.map(item => ({
+            ...item,
+            labels: item.labels.map(label => ({ name: label, color: randomColor() }))
+          }))
+          setData(newData);
+          setResults(newData);
+          jsonData.forEach(note => {
+            flexSearchAdd(note)
           });
         });
       } catch (error) {
@@ -47,13 +73,14 @@ function App() {
   }, [host]);
 
   useEffect(() => {
+    const searchText = searchQuery + " " + searchLabels.join(" ");
     setResults(
       data.filter(item => {
-        if (searchQuery === '') return true;
-        return index.search(searchQuery).includes(item.id)
+        if (searchText === ' ') return true;
+        return index.search(searchText).includes(item.id)
       })
     );
-  }, [searchQuery, data]);
+  }, [searchQuery, data, searchLabels]);
 
   // search
   const handleSearchChange = (e) => {
@@ -86,8 +113,12 @@ function App() {
       })
       .then(res_data => {
         if (res_data) {
-          index.add(res_data.id, res_data.note + " " + res_data.labels.join(" "));
-          setData([...data, res_data]);
+          const newData = {
+            ...res_data,
+            labels: res_data.labels.map(label => ({ name: label, color: randomColor() }))
+          }
+          flexSearchAdd(note)
+          setData([...data, newData]);
         }
         setShowResult(true);
         setTimeout(() => setShowResult(false), 2000);
@@ -96,13 +127,20 @@ function App() {
   };
 
   const handleLabelSelect = (label) => {
-    setSearchQuery(searchQuery === '' ? label : searchQuery + ' ' + label);
+    if (!searchLabels.includes(label)) {
+      setSearchLabels([...searchLabels, label]);
+    }
+    
+  }
+
+  const handleSearchLabelClick = (label) => {
+    setSearchLabels(searchLabels.filter(item => item !== label));
   }
 
   return (
     <Container style={styles.appContainer}>
       <Section minSize={150} defaultSize={250} style={styles.section}>
-        <LeftBar labels={new Set(data.flatMap(item => item.labels))} onNewItemClick={handleNewItemClick} handleLabelSelect={handleLabelSelect} />
+        <LeftBar labels={new Set(data.flatMap(item => item.labels.map((label) => label.name)))} onNewItemClick={handleNewItemClick} handleLabelSelect={handleLabelSelect} />
       </Section>
       <Bar size={1} style={{ background: '#444444', cursor: 'col-resize' }} />
       <Section minSize={1400} style={styles.section}>
@@ -110,6 +148,8 @@ function App() {
           searchQuery={searchQuery}
           onSearchChange={handleSearchChange}
           results={results}
+          searchLabels={searchLabels}
+          handleSearchLabelClick={handleSearchLabelClick}
         />
       </Section>
       {showPopup && (
