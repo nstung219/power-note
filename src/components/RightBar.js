@@ -1,10 +1,17 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 
 import SeachIcon from '../assets/icons/search.png';
 import '../App.css';
 import HighlightText from './HighlightText';
 
-const RightBar = ({ searchQuery, onSearchChange, results, searchLabels, handleSearchLabelClick }) => {
+const RightBar = ({ searchQuery, onSearchChange, searchResults, searchLabels, handleSearchLabelClick }) => {
+  const [results, setResults] = useState([]);
+
+  console.log("searchResult",searchResults);
+
+  useEffect(() => {
+    setResults(searchResults);
+  }, []);
   // const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   // const [showOptions, setShowOptions] = useState(false);
   // const dropdownRef = useRef(null);
@@ -32,6 +39,10 @@ const RightBar = ({ searchQuery, onSearchChange, results, searchLabels, handleSe
   //     document.removeEventListener('mousedown', handleClickOutside);
   //   };
   // }, [showOptions]);
+
+  useEffect(() => {
+    setResults(searchResults);
+  }, [searchResults]);
 
   return (
     <div style={styles.container}>

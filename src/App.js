@@ -82,13 +82,30 @@ function App() {
     }
 
     timeoutRef.current = setTimeout(() => {
+      const resultList = []
+      resultList.push(...data.filter(item => {
+        if (searchText === ' ') return true;
+        return index.search(searchText).includes(item.id)
+      }));
+      console.log(resultList)
       setResults(
-        data.filter(item => {
-          if (searchText === ' ') return true;
-          return index.search(searchText).includes(item.id)
-        })
+        resultList
       );
-    }, 500); // Delay search, only search after .5 second of inactivity
+      fetch(`${host}/full-text-search`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ note: searchText }),
+      })
+        .then(response => response.json())
+        .then(jsonData => {
+          console.log("jsonData", jsonData)
+          resultList.push(...jsonData);
+          console.log(resultList)
+          setResults(resultList);
+        });
+    }, 300); // Delay search, only search after .5 second of inactivity
     return () => { // Clear timeout when unmounting
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -110,7 +127,7 @@ function App() {
   // add label to new item
   const handleAddNote = async (note) => {
     // add fetch save note to db and replace note update
-    fetch(`${host}/note`, {
+    fetch(`${host}/notes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -160,7 +177,7 @@ function App() {
         <RightBar
           searchQuery={searchQuery}
           onSearchChange={handleSearchChange}
-          results={results}
+          searchResults={results}
           searchLabels={searchLabels}
           handleSearchLabelClick={handleSearchLabelClick}
         />
