@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import LeftBar from './components/LeftBar';
 import RightBar from './components/RightBar';
 import NewItemPopup from './components/NewItemPopup';
@@ -24,6 +24,7 @@ function App() {
   const [isNewNoteCreated, setIsNewNoteCreated] = useState(true);
 
   const host = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+  const timeoutRef = useRef(null); // Timeout for search, using let to allow clearing the timeout
 
   const randomColor = () => {
     // const blue = Math.floor(Math.random() * 256); // Random value for blue channel
@@ -50,21 +51,21 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await fetch(`${host}/notes`,{
+        await fetch(`${host}/notes`, {
           method: 'GET'
         })
-        .then(response => response.json())
-        .then(jsonData => {
-          const newData = jsonData.map(item => ({
-            ...item,
-            labels: item.labels.map(label => ({ name: label, color: randomColor() }))
-          }))
-          setData(newData);
-          setResults(newData);
-          jsonData.forEach(note => {
-            flexSearchAdd(note)
+          .then(response => response.json())
+          .then(jsonData => {
+            const newData = jsonData.map(item => ({
+              ...item,
+              labels: item.labels.map(label => ({ name: label, color: randomColor() }))
+            }))
+            setData(newData);
+            setResults(newData);
+            newData.forEach(note => {
+              flexSearchAdd(note)
+            });
           });
-        });
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -74,12 +75,25 @@ function App() {
 
   useEffect(() => {
     const searchText = searchQuery + " " + searchLabels.join(" ");
-    setResults(
-      data.filter(item => {
-        if (searchText === ' ') return true;
-        return index.search(searchText).includes(item.id)
-      })
-    );
+
+    // Clear previous search timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setResults(
+        data.filter(item => {
+          if (searchText === ' ') return true;
+          return index.search(searchText).includes(item.id)
+        })
+      );
+    }, 500); // Delay search, only search after .5 second of inactivity
+    return () => { // Clear timeout when unmounting
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [searchQuery, data, searchLabels]);
 
   // search
@@ -130,7 +144,6 @@ function App() {
     if (!searchLabels.includes(label)) {
       setSearchLabels([...searchLabels, label]);
     }
-    
   }
 
   const handleSearchLabelClick = (label) => {
@@ -158,7 +171,7 @@ function App() {
           onAddNote={handleAddNote}
         />
       )}
-      <NewItemResult isNewNoteCreated={isNewNoteCreated} showResult={showResult}/>
+      <NewItemResult isNewNoteCreated={isNewNoteCreated} showResult={showResult} />
     </Container>
   );
 }

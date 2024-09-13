@@ -1,17 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 
 import SeachIcon from '../assets/icons/search.png';
 import '../App.css';
 import HighlightText from './HighlightText';
 
 const RightBar = ({ searchQuery, onSearchChange, results, searchLabels, handleSearchLabelClick }) => {
-
-  results.map((result, index) => {
-    result.labels.map((label, index) => {
-      console.log(label.color, label.name)
-    })
-  })
-
   // const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   // const [showOptions, setShowOptions] = useState(false);
   // const dropdownRef = useRef(null);
