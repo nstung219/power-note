@@ -35,6 +35,7 @@ const NewItemPopup = ({ onClose, onAddNote }) => {
 
   return (
     <div style={styles.popup}>
+      <div className="blur"/>
       <div style={styles.popupContent}>
         <p style={{ color: '#e6e6e6' }}>New Note</p>
         <div style={styles.inputContainer}>

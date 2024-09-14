@@ -22,7 +22,6 @@ const HighlightText = ({ text, highlight}) => {
       const container = noteRef.current
       const computedContainer = window.getComputedStyle(container)
       const containerWidth = container.clientWidth - parseFloat(computedContainer.paddingLeft) - parseFloat(computedContainer.paddingRight);
-      console.log(containerWidth, noteRef.offsetWidth)
       const font = computedContainer.font;
       const splittedLines = []
       let line = ""

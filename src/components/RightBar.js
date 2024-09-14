@@ -4,7 +4,7 @@ import SeachIcon from '../assets/icons/search.png';
 import '../App.css';
 import HighlightText from './HighlightText';
 
-const RightBar = ({ searchQuery, highlight, onSearchChange, results, searchLabels, handleSearchLabelClick }) => {
+const RightBar = ({ searchQuery, highlight, onSearchChange, results, searchLabels, handleSearchLabelClick, handleNoteClick }) => {
   // const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   // const [showOptions, setShowOptions] = useState(false);
   // const dropdownRef = useRef(null);
@@ -67,7 +67,7 @@ const RightBar = ({ searchQuery, highlight, onSearchChange, results, searchLabel
         <div className='right-bar-list scrollable-container'>
           <ul style={styles.resultUl}>
             {results.map((result, index) => (
-              <li key={index} style={styles.resultItem}>
+              <li key={index} style={styles.resultItem} onClick={() => {handleNoteClick(result)}}>
                 <div style={styles.resultItemLabelContainer}>
                   {result.labels.map((label, index) => (
                     <div key={index} style={{...styles.resultItemLabels, ...{ backgroundColor: label.color } }}>{label.name}</div>

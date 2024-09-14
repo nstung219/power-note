@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  frontend:
+    container_name: frontend
+    build: ./
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://note:5000

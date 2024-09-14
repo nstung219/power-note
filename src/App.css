@@ -72,3 +72,12 @@
   transform: translateX(0); /* Slide back to the original position */
   max-height: 100px; /* Adjust according to content */
 }
+
+.blur {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.8;
+  z-index: -1;
+}

@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
+import DetailedNote from './components/DetailedNote';
 import LeftBar from './components/LeftBar';
-import RightBar from './components/RightBar';
 import NewItemPopup from './components/NewItemPopup';
 import NewItemResult from './components/NewItemResult';
+import RightBar from './components/RightBar';
 import { Container, Section, Bar } from '@column-resizer/react';
 import FlexSearch from "flexsearch";
 
@@ -24,6 +25,8 @@ function App() {
   const [searchLabels, setSearchLabels] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [noteClick, setNoteClick] = useState(false);
+  const [detailedNote, setDetailedNote] = useState();
   const [isNewNoteCreated, setIsNewNoteCreated] = useState(true);
 
   const host = process.env.REACT_APP_API_URL || 'http://localhost:5000'
@@ -85,7 +88,7 @@ function App() {
   useEffect(() => {
     const resultList = data.filter(item => {
       const ids = [...flexSearchResults, ...ftsResults]
-      if (ids.length === 0) {
+      if (searchQuery === "" && searchLabels.length === 0) {
         return true
       }
       return ids.includes(item.id)
@@ -116,7 +119,7 @@ function App() {
             setFtsResults(jsonData.map(item => item.id));
           });
       }
-    }, 500); // Delay search, only search after .5 second of inactivity
+    }, 300); // Delay search, only search after .5 second of inactivity
     return () => { // Clear timeout when unmounting
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -192,6 +195,15 @@ function App() {
     setSearchLabels(searchLabels.filter(item => item !== label));
   }
 
+  const handleNoteClick = (note) => {
+    setNoteClick(true)
+    setDetailedNote(note)
+  }
+
+  const handleCloseDetailedNote = () => {
+    setNoteClick(false)
+  }
+
   return (
     <Container style={styles.appContainer}>
       <Section minSize={150} defaultSize={250} style={styles.section}>
@@ -206,6 +218,7 @@ function App() {
           results={results}
           searchLabels={searchLabels}
           handleSearchLabelClick={handleSearchLabelClick}
+          handleNoteClick={handleNoteClick}
         />
       </Section>
       {showPopup && (
@@ -215,6 +228,12 @@ function App() {
         />
       )}
       <NewItemResult isNewNoteCreated={isNewNoteCreated} showResult={showResult} />
+      {noteClick && (
+        <DetailedNote 
+          detailedNote={detailedNote}
+          handleCloseDetailedNote={handleCloseDetailedNote}
+        />
+      )}
     </Container>
   );
 }
