@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import LeftBar from './components/LeftBar';
 import RightBar from './components/RightBar';
 import NewItemPopup from './components/NewItemPopup';
@@ -17,13 +17,17 @@ const index = new FlexSearch.Index({
 function App() {
   const [data, setData] = useState([]);
   const [results, setResults] = useState([]);
+  const [flexSearchResults, setFlexSearchResults] = useState([]);
+  const [ftsResults, setFtsResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [highlight, setHighlight] = useState('');
   const [searchLabels, setSearchLabels] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [isNewNoteCreated, setIsNewNoteCreated] = useState(true);
 
-  const host = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+  const host = process.env.REACT_APP_API_URL || 'http://localhost:5000'
+
   const timeoutRef = useRef(null); // Timeout for search, using let to allow clearing the timeout
 
   const randomColor = () => {
@@ -43,9 +47,16 @@ function App() {
     return `rgb(${red}, ${green}, ${blue})`;
   }
 
-  const flexSearchAdd = (note) => {
+  const coloredNote = useCallback((note) => {
+    return {
+      ...note,
+      labels: note.labels.map(label => ({ name: label, color: randomColor() }))
+    }
+  }, [])
+
+  const flexSearchAdd = useCallback((note) => {
     index.add(note.id, note.note + " " + note.labels.map(label => label.name).join(" "));
-  }
+  }, [])
 
   // Load items from data.json
   useEffect(() => {
@@ -56,64 +67,64 @@ function App() {
         })
           .then(response => response.json())
           .then(jsonData => {
-            const newData = jsonData.map(item => ({
-              ...item,
-              labels: item.labels.map(label => ({ name: label, color: randomColor() }))
-            }))
+            const newData = jsonData.map(note => coloredNote(note));
             setData(newData);
-            setResults(newData);
             newData.forEach(note => {
               flexSearchAdd(note)
             });
+            setResults(newData);
           });
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
     };
     fetchData()
-  }, [host]);
+  }, [host, coloredNote, flexSearchAdd]);
+
+  // search for notes by flexSearch, same time async for fts from backend show unique result
+  useEffect(() => {
+    const resultList = data.filter(item => {
+      const ids = [...flexSearchResults, ...ftsResults]
+      if (ids.length === 0) {
+        return true
+      }
+      return ids.includes(item.id)
+    });
+    setResults(resultList);
+  }, [ftsResults, flexSearchResults, data]);
 
   useEffect(() => {
     const searchText = searchQuery + " " + searchLabels.join(" ");
-
     // Clear previous search timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
     timeoutRef.current = setTimeout(() => {
-      const resultList = []
-      resultList.push(...data.filter(item => {
-        if (searchText === ' ') return true;
-        return index.search(searchText).includes(item.id)
-      }));
-      console.log(resultList)
-      setResults(
-        resultList
-      );
-      fetch(`${host}/full-text-search`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ note: searchText }),
-      })
-        .then(response => response.json())
-        .then(jsonData => {
-          console.log("jsonData", jsonData)
-          resultList.push(...jsonData);
-          console.log(resultList)
-          setResults(resultList);
-        });
-    }, 300); // Delay search, only search after .5 second of inactivity
+      setHighlight(searchQuery)
+      setFlexSearchResults(index.search(searchText));
+      if (searchText.length > 0) {
+        fetch(`${host}/full-text-search`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ note: searchText }),
+        })
+          .then(response => response.json())
+          .then(jsonData => {
+            setFtsResults(jsonData.map(item => item.id));
+          });
+      }
+    }, 500); // Delay search, only search after .5 second of inactivity
     return () => { // Clear timeout when unmounting
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [searchQuery, data, searchLabels]);
+  }, [searchQuery, data, searchLabels, host]);
 
-  // search
+  // on search change, set query string
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -142,20 +153,34 @@ function App() {
           return response.json()
         }
       })
-      .then(res_data => {
-        if (res_data) {
-          const newData = {
-            ...res_data,
-            labels: res_data.labels.map(label => ({ name: label, color: randomColor() }))
-          }
-          flexSearchAdd(note)
-          setData([...data, newData]);
+      .then(jsonData => {
+        if (jsonData) {
+          setData([...data, coloredNote(jsonData)]);
+          flexSearchAdd(jsonData);
+          generateLabels(jsonData)
         }
         setShowResult(true);
         setTimeout(() => setShowResult(false), 2000);
       });
     setShowPopup(false);
   };
+
+  const generateLabels = (note) => {
+    fetch(`${host}/classify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(note),
+    })
+      .then(response => response.json())
+      .then(jsonData => {
+        const newNote = coloredNote(jsonData)
+        const newData = data.map(item => item.id === newNote.id ? newNote : item )
+        setData(newData)
+        flexSearchAdd(newNote)
+      });
+  }
 
   const handleLabelSelect = (label) => {
     if (!searchLabels.includes(label)) {
@@ -176,8 +201,9 @@ function App() {
       <Section minSize={1400} style={styles.section}>
         <RightBar
           searchQuery={searchQuery}
+          highlight={highlight}
           onSearchChange={handleSearchChange}
-          searchResults={results}
+          results={results}
           searchLabels={searchLabels}
           handleSearchLabelClick={handleSearchLabelClick}
         />

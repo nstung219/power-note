@@ -1,17 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
 import SeachIcon from '../assets/icons/search.png';
 import '../App.css';
 import HighlightText from './HighlightText';
 
-const RightBar = ({ searchQuery, onSearchChange, searchResults, searchLabels, handleSearchLabelClick }) => {
-  const [results, setResults] = useState([]);
-
-  console.log("searchResult",searchResults);
-
-  useEffect(() => {
-    setResults(searchResults);
-  }, []);
+const RightBar = ({ searchQuery, highlight, onSearchChange, results, searchLabels, handleSearchLabelClick }) => {
   // const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   // const [showOptions, setShowOptions] = useState(false);
   // const dropdownRef = useRef(null);
@@ -39,11 +32,6 @@ const RightBar = ({ searchQuery, onSearchChange, searchResults, searchLabels, ha
   //     document.removeEventListener('mousedown', handleClickOutside);
   //   };
   // }, [showOptions]);
-
-  useEffect(() => {
-    setResults(searchResults);
-  }, [searchResults]);
-
   return (
     <div style={styles.container}>
       <div style={styles.searchContainer}>
@@ -82,10 +70,10 @@ const RightBar = ({ searchQuery, onSearchChange, searchResults, searchLabels, ha
               <li key={index} style={styles.resultItem}>
                 <div style={styles.resultItemLabelContainer}>
                   {result.labels.map((label, index) => (
-                    <div key={index} style={{ ...styles.resultItemLabels, ...{ backgroundColor: label.color } }}>{label.name}</div>
+                    <div key={index} style={{...styles.resultItemLabels, ...{ backgroundColor: label.color } }}>{label.name}</div>
                   ))}
                 </div>
-                <HighlightText text={result.note} highlight={searchQuery} />
+                <HighlightText text={result.note} highlight={highlight}/>
               </li>
             ))}
           </ul>
